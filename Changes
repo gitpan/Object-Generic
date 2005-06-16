@@ -1,0 +1,13 @@
+Revision history for Object-Generic
+
+0.02    June 13 2005
+        added $obj->keys and $obj->exists('key') methods,
+	for compatability with Session.pm
+
+0.01    June 7 2005
+	template created with
+           $ module-starter \ 
+	     --module=Object::Generic,Object::Generic::False, \ 
+             --author="Jim Mahoney" --email=mahoney@marlboro.edu
+        added 1st attempt at code for Generic.pm and Generic/False.pm
+          
