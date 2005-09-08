@@ -25,7 +25,7 @@ use strict;
 use warnings;
 use Object::Generic::False qw(false);
 
-our $VERSION = '0.03';
+our $VERSION = '0.11';
 
 my $false = Object::Generic::false();
 
@@ -239,6 +239,8 @@ Object::Generic - A generic base class that allows storage of key/value pairs.
   $thing->set_color('blue');
   $thing->color('blue');
 
+  $thing->remove('color');
+
   @key_list  = $thing->keys;
   $has_color = $thing->exists('color');
 
@@ -250,6 +252,13 @@ Object::Generic - A generic base class that allows storage of key/value pairs.
     $self->args(@_);    # processes @args=(key=>value, key=>value, ...)
     print $self->width;
   }
+
+  package otherClass;
+  use base 'Object::Generic';
+  otherClass->define_accessors(qw( name age weight ));
+  my $guy = new OtherClass;
+  $guy->name('Jim');  
+  print "his name is " . $guy->name . "\n";
 
   package main;
   use myClass;
@@ -289,6 +298,19 @@ the built-in $obj->args( key1=>'value1', key2=>'value2') method.
 The Object::Generic class may be used as a base class; 
 by default any methods in the inherited class that aren't defined 
 will be treated as keys.
+
+As an alternative to having the accessor subroutines (e.g. 
+$object->name, $object->set_name, $object->get_name for key='name')
+defined by AUTOLOAD the first time they're invoked, they may
+be created explicitly with a call to $class->define_accessors(@keys).
+This also calls $class->set_allowed_keys(@keys), which means that 
+trying to access keys that aren't explicitly allowed will give an error.
+One advantage to defining the accessors explicitly is that multiple
+inheritence is easier, since the Object::Generic::AUTOLOAD isn't needed.
+
+=head1 BUGS
+
+This should be in the Class:: namespace somewhere.  Oops.
 
 =head1 SEE ALSO
 

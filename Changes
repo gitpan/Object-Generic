@@ -1,5 +1,9 @@
 Revision history for Object-Generic
 
+0.11    Sep 8 2005
+	updated the documentation; changed version number upward
+	to match Object::Generic::Session's as of this date.
+
 0.03    Sep 8 2005
 	added $obj->remove('key') and $class->define_accessors(@keys) methods
 
