@@ -18,14 +18,14 @@ package Object::Generic;
 #
 # See the bottom of this file for the documentation.
 #
-# $Id: Generic.pm 384 2005-06-16 15:33:29Z mahoney $
+# $Id: Generic.pm 403 2005-09-08 20:17:37Z mahoney $
 #
 #
 use strict;
 use warnings;
 use Object::Generic::False qw(false);
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 my $false = Object::Generic::false();
 
@@ -86,6 +86,44 @@ sub allows_key {
   my ($key) = @_;
   return 1 unless exists($allowed_keys->{$class});
   return $allowed_keys->{$class}{$key};
+}
+
+
+# Usage: InheritedClass->define_accessors( @keys );
+# For each $key, defines $obj->get_key(), $obj->set_key(), and $obj->key().
+# Also calls set_allowed_keys, so as a side effect, other keys not in
+# this won't be allowed unless given in another call to set_allowed_keys
+# or define_accessors.  Note that this may be helpful if you're using
+# multiple inheritance, since this can avoid the use of AUTOHANDLER which
+# may not be available if there's another AUTOHANDER earlier in the 
+# inheritence chain.
+sub define_subs {
+  my $class = shift;
+  return if ref($class); # This can't be called from an object instance.
+  my @keys = @_;
+  $class->set_allowed_keys(@keys);
+  for my $key (@keys){
+    no strict 'refs';
+    *{$class . '::' . $key } = sub {
+      $_[0]->set( $key => $_[1] ) if exists $_[1];
+      return $_[0]->get( $key );
+     };
+    *{$class . '::' . 'set_' . $key } = sub {
+      $_[0]->set($key => $_[1]);
+      return $_[0]->get($key);
+    };
+    *{$class . '::' . 'get_' . $key } = sub {
+      return $_[0]->get($key);
+    };
+  }
+}
+
+# $obj->remove($key) is the same as delete($obj->{$key});
+sub remove {
+  my $self = shift;
+  my $key  = shift;
+  return unless $key;
+  delete($self->{$key});
 }
 
 #

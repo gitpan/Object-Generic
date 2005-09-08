@@ -1,5 +1,8 @@
 Revision history for Object-Generic
 
+0.03    Sep 8 2005
+	added $obj->remove('key') and $class->define_accessors(@keys) methods
+
 0.02    June 13 2005
         added $obj->keys and $obj->exists('key') methods,
 	for compatability with Session.pm

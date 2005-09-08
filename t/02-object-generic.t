@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 #
-# $Id: 02-object-generic.t 384 2005-06-16 15:33:29Z mahoney $ 
+# $Id: 02-object-generic.t 403 2005-09-08 20:17:37Z mahoney $ 
 #
-use Test::More tests => 25;
+use Test::More tests => 28;
 
 use strict;
 use warnings;
@@ -30,6 +30,9 @@ ok( (not $g->this->that->those),	'not g->this->that->those' );
 ok( $g->exists('color'),                '->exists(key) true when it does');
 ok( ! $g->exists('foo'),                '->exists(key) false when not');
 ok( scalar($g->keys()) == 4,            '->keys');
+
+$g->remove('color');
+ok( scalar($g->keys()) == 3,            '->remove(color) leaves one less ->key');
 
 # test set_allowed_keys in an inherited class
 
@@ -80,3 +83,13 @@ for (keys %$obj){
   $count++ if m/^__/;
 }
 ok( $count==3,             'inherited get/set: internals look OK');
+
+# test define_subs 
+{ package Define_Stuff;
+  our @ISA = qw( Object::Generic );
+}
+Define_Stuff->define_keys(qw( name age weight ));
+my $ds = new Define_Stuff;
+ok( $ds->can('set_name'), "define_keys('name') makes set_name");
+$ds->age(32);
+ok( $ds->age == 32,       "dfine_keys accessors look OK");
