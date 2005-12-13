@@ -5,7 +5,7 @@
 # but which still allows method calls.
 #
 #   use Object::Generic::False qw( false );
-#   my $n = false;                  # returns global $Object::Generic::False::_false_
+#   my $n = false;      # returns global $Object::Generic::False::_false_
 #   print "n is false" if not $n;
 #   print "n->foo->bar is also false" if not $n->foo->bar;
 #
@@ -41,7 +41,7 @@ use overload
   ;
 sub new {
   my $class = shift;
-  my $false = 0;
+  my $false = shift || 0;
   return bless \$false => $class;
 }
 sub DESTROY {   # Defined here so that AUTOLOAD won't handle it.
@@ -51,6 +51,10 @@ sub AUTOLOAD {
 }
 sub false {
   return $_false_;
+}
+sub error {
+  my $self = shift;
+  return $$self;
 }
 
 1;
@@ -65,9 +69,12 @@ a perl object that evaluates as false but allows method calls.
 =head1 SYNOPSIS
 
   use Object::Generic::False qw(false);
-  my $n = false;                  # returns global $Object::Generic::False::_false_
+  my $n = false;        # returns global $Object::Generic::False::_false_
   print "n is false" if not $n;
   print "n->foo->bar is also false" if not $n->foo->bar;
+
+  my $result = Object::Generic::False->new('Some error message.');
+  print The error is '" . $result->error . "'\n" if not $result;
 
 =head1 DESCRIPTION
 
@@ -85,6 +92,12 @@ In that respect they act somewhat "tainted" variables.
 
 The exceptions to this rule are comparisons and string concatenation:
 (false == 0) and (false eq '') are both true, while false()."foo" is "foo".
+
+These objects can also be used as a returned error with an enclosed
+message.  To do so, just pass in a string when creating one with
+the new message, ie "$result = new Object::Generic::False 'your message'".
+$result still evaluates as false, but the message may be retrieved
+with $result->error.
 
 =head2 EXPORT
 

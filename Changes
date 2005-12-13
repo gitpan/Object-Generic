@@ -1,5 +1,11 @@
 Revision history for Object-Generic
 
+0.13    Sep 26 2005
+	added ability to keep an error message within Object::Generic::False
+
+0.12    Sep 26 2005
+	fixed bug in Object::Generic::exists; crashed if key wasn't passed.
+
 0.11    Sep 8 2005
 	updated the documentation; changed version number upward
 	to match Object::Generic::Session's as of this date.

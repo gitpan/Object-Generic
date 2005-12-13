@@ -25,7 +25,7 @@ use strict;
 use warnings;
 use Object::Generic::False qw(false);
 
-our $VERSION = '0.11';
+our $VERSION = '0.13';
 
 my $false = Object::Generic::false();
 
@@ -46,6 +46,7 @@ sub keys {
 sub exists {
   my $self = shift;
   my ($key) = @_;
+  return 0 unless defined $key;
   return exists($self->{$key});
 }
 
